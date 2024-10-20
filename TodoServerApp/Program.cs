@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using TodoServerApp.Components;
 using TodoServerApp.Components.Account;
 using TodoServerApp.Data;
+using TodoServerApp.Data.Interfaces;
+using TodoServerApp.Data.Services;
 
 namespace TodoServerApp
 {
@@ -40,6 +43,7 @@ namespace TodoServerApp
                 .AddDefaultTokenProviders();
 
             builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+            builder.Services.AddScoped<IDataService, MemoryDataService>();
 
             var app = builder.Build();
 

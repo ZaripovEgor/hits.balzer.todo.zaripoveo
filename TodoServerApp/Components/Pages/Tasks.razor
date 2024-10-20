@@ -1,7 +1,10 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@inject IDataService data
+@attribute [Authorize]
 
-<PageTitle>Задачи</PageTitle>
 
+<PageTitle>Задачи</PageTitle> 
 <h1>Мои задачи</h1>
 
 <table class="table table-bordered">
@@ -15,24 +18,36 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var t in tasks)
+        @if(tasks == null)
         {
-        <tr>
-            <td>@t.Id</td>
-            <td>@t.Title</td>
-            <td>@t.Description</td>
-            <td>@t.CreatedDate</td>
-            <td>@t.FinishDate</td>
-        </tr>
+            <tr>
+                <td colspan="5">
+                    Loading ...
+                </td>
+            </tr>
         }
+        else
+        {
+            @foreach (var t in tasks)
+            {
+                <tr>
+                    <td>@t.Id</td>
+                    <td>@t.Title</td>
+                    <td>@t.Description</td>
+                    <td>@t.CreatedDate</td>
+                    <td>@t.FinishDate</td>
+                </tr>
+            }
+        }  
     </tbody>
 </table>
 
 @code {
-    IEnumerable<TaskItem> tasks = new List<TaskItem>
+    IEnumerable<TaskItem>? tasks;
+
+    protected override async Task OnInitializedAsync()
     {
-        new TaskItem { Id=1, Title="Задача 1", Description="Описание задачи 1", CreatedDate=DateTime.Now },
-        new TaskItem { Id=2, Title="Задача 2", Description="Описание задачи 2", CreatedDate=DateTime.Now },        
-        new TaskItem { Id=3, Title="Задача 3", Description="Описание задачи 3", CreatedDate=DateTime.Now },
-    };
+        await base.OnInitializedAsync();
+        tasks = await data.GetTaskItemAsync();
+    }
 }
