@@ -4,43 +4,36 @@
 @* @attribute [Authorize] *@
 
 
-<PageTitle>Задачи</PageTitle> 
+<PageTitle>Задачи</PageTitle>
 <h1>Мои задачи</h1>
 
-<table class="table table-bordered">
-    <thead>
+<div class="container">
+    @if (tasks == null)
+    {
         <tr>
-            <th>ИД</th>
-            <th>Заголовок</th>
-            <th>Описание</th>
-            <th>Создано</th>
-            <th>Завершено</th>
+            <td colspan="5">
+                Loading ...
+            </td>
         </tr>
-    </thead>
-    <tbody>
-        @if(tasks == null)
-        {
-            <tr>
-                <td colspan="5">
-                    Loading ...
-                </td>
-            </tr>
-        }
-        else
-        {
+    }
+    else
+    {
+        <div class="card-group">
             @foreach (var t in tasks)
             {
-                <tr>
-                    <td>@t.Id</td>
-                    <td>@t.Title</td>
-                    <td>@t.Description</td>
-                    <td>@t.CreatedDate</td>
-                    <td>@t.FinishDate</td>
-                </tr>
+                <div class="card">
+                    <div class="card-header">
+                        @t.Title
+                    </div>
+                    <div class="card-body">
+                        <p>@t.Description</p>
+                        <p>@t.CreatedDate</p>
+                    </div>
+                </div>
             }
-        }  
-    </tbody>
-</table>
+        </div>
+    }
+</div>
 
 @code {
     IEnumerable<TaskItem>? tasks;
