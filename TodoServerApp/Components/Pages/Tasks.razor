@@ -2,7 +2,7 @@
 @rendermode InteractiveServer
 @inject IDataService data
 @* @attribute [Authorize] *@
-
+@inject NavigationManager navigate
 
 <PageTitle>Задачи</PageTitle>
 <h1>Мои задачи</h1>
@@ -18,6 +18,9 @@
     }
     else
     {
+        <div class="btn-group m-2">
+            <button class="btn btn-primary" @onclick="AddTask">Новая задача</button>
+        </div>
         <div class="card-group">
             @foreach (var t in tasks)
             {
@@ -28,6 +31,10 @@
                     <div class="card-body">
                         <p>@t.Description</p>
                         <p>@t.CreatedDate</p>
+                    </div>
+                    <div class="card-footer">
+                        <a class="btn btn-primary" href="tasks/@t.Id">Изменить</a>
+                        <button class="btn btn-primary" onclick="async () => await DeleteTask(task.Id)">Удалить</button>
                     </div>
                 </div>
             }
@@ -41,6 +48,17 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        tasks = await data.GetTaskItemAsync();
+        tasks = await data.GetAllAsync();
+    }
+
+    void AddTask()
+    {
+        navigate.NavigateTo("tasks/add");
+    }
+
+    async Task DeleteTask(int id)
+    {
+        await data.DeleteAsync(id);
+        tasks = await data.GetAllAsync();
     }
 }
